@@ -1,10 +1,9 @@
-import 'package:dicoding_flutter/NavigationAndRouting/another_sceen.dart';
-import 'package:dicoding_flutter/NavigationAndRouting/first_screen.dart';
-import 'package:dicoding_flutter/NavigationAndRouting/replacement_screen.dart';
-import 'package:dicoding_flutter/NavigationAndRouting/return_data_screen.dart';
-import 'package:dicoding_flutter/NavigationAndRouting/second_screen.dart';
-import 'package:dicoding_flutter/NavigationAndRouting/second_screen_with_data.dart';
+import 'package:dicoding_flutter/NewsApp/article.dart';
+import 'package:dicoding_flutter/NewsApp/article_web_view.dart';
+import 'package:dicoding_flutter/NewsApp/detail_page.dart';
+import 'package:dicoding_flutter/NewsApp/news_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,21 +15,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'News App',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        useMaterial3: true,
+        useMaterial3: false,
       ),
-      initialRoute: '/',
+      initialRoute: NewsListPage.routeName,
       routes: {
-        '/': (context) => const FirstScreen(),
-        '/secondScreen': (context) => const SecondScreen(),
-        '/secondScreenWithData': (context) => SecondScreenWithData(
-            ModalRoute.of(context)?.settings.arguments as String),
-        '/returnDataScreen': (context) => const ReturnDataScreen(),
-        '/replacementScreen': (context) => const ReplacementScreen(),
-        '/anotherScreen': (context) => const AnotherScreen(),
+        NewsListPage.routeName: (context) => const NewsListPage(),
+        DetailPage.routeName: (context) => DetailPage(
+            article: ModalRoute.of(context)?.settings.arguments as Article),
+        ArticleWebView.routeName: (context) => ArticleWebView(
+            url: ModalRoute.of(context)?.settings.arguments as String),
       },
     );
   }
