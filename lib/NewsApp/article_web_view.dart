@@ -1,3 +1,4 @@
+import 'package:dicoding_flutter/NewsApp/Widgets/wg_custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,10 +15,7 @@ class ArticleWebView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = WebViewController()..loadRequest(Uri.parse(url));
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('News App'),
-      ),
+    return WgCustomScaffold(
       body: WebViewWidget(
         controller: controller,
       ),
