@@ -1,6 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
+import 'package:dicoding_flutter/FlutterUI/Calculator/Widget/wg_CalculatorButton.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,10 +14,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gesture Detector',
+      title: 'Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: false,
+        primarySwatch: Colors.deepPurple,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const MyHomePage(),
     );
@@ -26,99 +28,244 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final double boxSize = 150.0;
+  String screenText = '0';
 
-  // tap counter
-  int numTaps = 0;
-  int numDoubleTaps = 0;
-  int numLongPress = 0;
+  void pressNumber(int number) {
+    setState(() {
+      if (screenText == '0') {
+        screenText = '$number';
+      } else {
+        screenText = '$screenText$number';
+      }
+    });
+  }
 
-  // initial position
-  double posX = 0.0;
-  double posY = 0.0;
+  void pressExpression(String exp) {
+    setState(() {
+      if (screenText.isNotEmpty) {
+        screenText = '$screenText$exp';
+      }
+    });
+  }
 
-  void center(BuildContext context) {
-    posX = (MediaQuery.of(context).size.width / 2) - boxSize / 2;
-    posY = (MediaQuery.of(context).size.height / 2) - boxSize / 2 - 30;
+  void pressResult() {
+    Parser p = Parser();
+    ContextModel cm = ContextModel();
+    Expression exp = p.parse(screenText);
 
     setState(() {
-      posX = posX;
-      posY = posY;
+      screenText = exp.evaluate(EvaluationType.REAL, cm).toString();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (posX == 0) {
-      center(context);
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gesture Detector'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          'Calculator',
+          style: Theme.of(context)
+              .textTheme
+              .headline6!
+              .copyWith(color: Colors.white),
+        ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          Positioned(
-            top: posY,
-            left: posX,
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  numTaps++;
-                });
-              },
-              onDoubleTap: () {
-                setState(() {
-                  numDoubleTaps++;
-                });
-              },
-              onLongPress: () {
-                setState(() {
-                  numLongPress++;
-                });
-              },
-              // // gesture detector cant have onVerticalDragUpdate/onHorizontalDragUpdate together with onPanUpdate
-              // onVerticalDragUpdate: (details) {
-              //   setState(() {
-              //     double delta = details.delta.dy;
-              //     posY += delta;
-              //   });
-              // },
-              // onHorizontalDragUpdate: (details) {
-              //   setState(() {
-              //     double delta = details.delta.dx;
-              //     posX += delta;
-              //   });
-              // },
-              onPanUpdate: (details) {
-                setState(() {
-                  double deltaX = details.delta.dx;
-                  double deltaY = details.delta.dy;
-                  posX += deltaX;
-                  posY += deltaY;
-                });
-              },
-              child: Container(
-                width: boxSize,
-                height: boxSize,
-                decoration: const BoxDecoration(color: Colors.red),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).highlightColor,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  screenText,
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                ),
               ),
             ),
           ),
+          GridView.count(
+            padding: const EdgeInsets.all(0),
+            shrinkWrap: true,
+            crossAxisCount: 4,
+            children: <Widget>[
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorLight,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: 'C',
+                onTap: () {
+                  setState(() {
+                    screenText = '0';
+                  });
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorLight,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '+/-',
+                onTap: () {},
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorLight,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '%',
+                onTap: () {},
+              ),
+              WgCalculatorButton.Icon(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                foregroundColor: Theme.of(context).primaryColorLight,
+                icon: Icons.backspace,
+                onTap: () {
+                  setState(() {
+                    if (screenText == '0' ||
+                        screenText == '' ||
+                        screenText.length == 1) {
+                      screenText = '0';
+                    } else {
+                      screenText =
+                          screenText.substring(0, screenText.length - 1);
+                    }
+                  });
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '7',
+                onTap: () {
+                  pressNumber(7);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '8',
+                onTap: () {
+                  pressNumber(8);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '9',
+                onTap: () {
+                  pressNumber(9);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                foregroundColor: Theme.of(context).primaryColorLight,
+                text: '/',
+                onTap: () {
+                  pressExpression('/');
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '4',
+                onTap: () {
+                  pressNumber(4);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '5',
+                onTap: () {
+                  pressNumber(5);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '6',
+                onTap: () {
+                  pressNumber(6);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                foregroundColor: Theme.of(context).primaryColorLight,
+                text: 'X',
+                onTap: () {
+                  pressExpression('*');
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '1',
+                onTap: () {
+                  pressNumber(1);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '2',
+                onTap: () {
+                  pressNumber(2);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '3',
+                onTap: () {
+                  pressNumber(3);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                foregroundColor: Theme.of(context).primaryColorLight,
+                text: '-',
+                onTap: () {
+                  pressExpression('-');
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '0',
+                onTap: () {
+                  pressNumber(0);
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).highlightColor,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '.',
+                onTap: () {
+                  pressExpression('.');
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorLight,
+                foregroundColor: Theme.of(context).primaryColorDark,
+                text: '=',
+                onTap: () {
+                  pressResult();
+                },
+              ),
+              WgCalculatorButton(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                foregroundColor: Theme.of(context).primaryColorLight,
+                text: '+',
+                onTap: () {
+                  pressExpression('+');
+                },
+              ),
+            ],
+          ),
         ],
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.yellow,
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'Taps: $numTaps - Double Taps: $numDoubleTaps - Long Press: $numLongPress',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
       ),
     );
   }
