@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, file_names, non_constant_identifier_names, must_be_immutable
+// ignore_for_file: deprecated_member_use, must_be_immutable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 
