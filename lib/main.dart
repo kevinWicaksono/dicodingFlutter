@@ -1,5 +1,7 @@
-import 'package:dicoding_flutter/SliverListAndSliverGrid/learning_path_page.dart';
-import 'package:flutter/material.dart';
+import 'package:dicoding_flutter/Cupertino/feeds_page.dart';
+import 'package:dicoding_flutter/Cupertino/search_page.dart';
+import 'package:dicoding_flutter/Cupertino/setting_page.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,17 +12,63 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'News App',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        useMaterial3: false,
+    return const CupertinoApp(
+      theme: CupertinoThemeData(
+        primaryColor: CupertinoColors.systemOrange,
       ),
-      initialRoute: LearningPathPage.routeName,
-      routes: {
-        LearningPathPage.routeName: (context) => const LearningPathPage(),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.news),
+            label: 'Feeds',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return FeedsPage();
+          case 1:
+            return SearchPage();
+          case 2:
+            return SettingPage();
+          default:
+            return const Center(
+              child: Text('Page not found!'),
+            );
+        }
       },
     );
+    
+    // return CupertinoPageScaffold(
+    //   navigationBar: const CupertinoNavigationBar(
+    //     middle: Text('Cupertino App'),
+    //   ),
+    //   child: Center(
+    //     child: Text(
+    //       'Home Page',
+    //       style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle,
+    //     ),
+    //   ),
+    // );
   }
 }
