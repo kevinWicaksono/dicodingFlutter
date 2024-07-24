@@ -1,7 +1,10 @@
-import 'package:dicoding_flutter/Cupertino/feeds_page.dart';
-import 'package:dicoding_flutter/Cupertino/search_page.dart';
-import 'package:dicoding_flutter/Cupertino/setting_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/Common/text_theme.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/Data/Model/article.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/UI/article_detail_page.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/UI/article_web_view.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/UI/home_page.dart';
+import 'package:dicoding_flutter/NewsAppCupertino/Common/styles.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,63 +15,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(
-        primaryColor: CupertinoColors.systemOrange,
+    return MaterialApp(
+      title: 'News App',
+      theme: ThemeData(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: primaryColor,
+              secondary: secondaryColor,
+              onPrimary: Colors.black,
+            ),
+        textTheme: myTextTheme,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        appBarTheme: const AppBarTheme(elevation: 0.8),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: secondaryColor,
+            foregroundColor: Colors.white,
+            textStyle: const TextStyle(),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(4),
+              ),
+            ),
+          ),
+        ),
+        useMaterial3: false,
       ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.news),
-            label: 'Feeds',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.settings),
-            label: 'Settings',
-          ),
-        ],
-      ),
-      tabBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return FeedsPage();
-          case 1:
-            return SearchPage();
-          case 2:
-            return SettingPage();
-          default:
-            return const Center(
-              child: Text('Page not found!'),
-            );
-        }
+      initialRoute: HomePage.routeName,
+      routes: {
+        HomePage.routeName: (context) => const HomePage(),
+        ArticleDetailPage.routeName: (context) => ArticleDetailPage(
+            article: ModalRoute.of(context)?.settings.arguments as Article),
+        ArticleWebView.routeName: (context) => ArticleWebView(
+            url: ModalRoute.of(context)?.settings.arguments as String),
       },
     );
-    
-    // return CupertinoPageScaffold(
-    //   navigationBar: const CupertinoNavigationBar(
-    //     middle: Text('Cupertino App'),
-    //   ),
-    //   child: Center(
-    //     child: Text(
-    //       'Home Page',
-    //       style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle,
-    //     ),
-    //   ),
-    // );
   }
 }
