@@ -1,4 +1,4 @@
-import 'package:dicoding_flutter/Slivers/pixel_page.dart';
+import 'package:dicoding_flutter/SliverListAndSliverGrid/learning_path_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: false,
       ),
-      initialRoute: PixelPage.routeName,
+      initialRoute: LearningPathPage.routeName,
       routes: {
-        PixelPage.routeName: (context) => const PixelPage(),
+        LearningPathPage.routeName: (context) => const LearningPathPage(),
       },
     );
   }
