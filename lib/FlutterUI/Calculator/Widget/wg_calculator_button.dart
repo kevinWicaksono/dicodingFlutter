@@ -37,7 +37,7 @@ class WgCalculatorButton extends StatelessWidget {
                   text ?? '',
                   style: Theme.of(context)
                       .textTheme
-                      .headline4!
+                      .headlineMedium!
                       .copyWith(color: foregroundColor),
                 )
               : Icon(
