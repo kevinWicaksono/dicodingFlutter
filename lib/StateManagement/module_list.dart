@@ -32,7 +32,11 @@ class _ModuleListState extends State<ModuleList> {
           isDone: widget.doneModuleList.contains(_moduleList[index]),
           onClick: () {
             setState(() {
-              widget.doneModuleList.add(_moduleList[index]);
+              if (widget.doneModuleList.contains(_moduleList[index])) {
+                widget.doneModuleList.remove(_moduleList[index]);
+              } else {
+                widget.doneModuleList.add(_moduleList[index]);
+              }
             });
           },
         );
@@ -58,10 +62,13 @@ class ModuleTile extends StatelessWidget {
     return ListTile(
       title: Text(moduleName),
       trailing: isDone
-          ? const Icon(Icons.done)
+          ? ElevatedButton(
+              onPressed: onClick,
+              child: const Icon(Icons.clear),
+            )
           : ElevatedButton(
               onPressed: onClick,
-              child: const Text('Done'),
+              child: const Icon(Icons.done),
             ),
     );
   }
