@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final NotificationHelper notificationHelper = NotificationHelper();
@@ -16,13 +16,20 @@ Future<void> main() async {
   notificationHelper.requestAndroidPermissions(flutterLocalNotificationsPlugin);
   notificationHelper.requestIOSPermissions(flutterLocalNotificationsPlugin);
 
-  runApp(
-    MaterialApp(
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => const HomePage(),
         DetailPage.routeName: (context) => const DetailPage(),
       },
-    ),
-  );
+    );
+  }
 }
